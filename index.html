@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Community Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div id="location-display">📍 Detecting location...</div>
+    <div class="header-right">
+      <div id="clock-display">🕐 --:--:--</div>
+      <button id="theme-toggle">☀️ Light Mode</button>
+    </div>
+  </header>
+
+  <!-- SEARCH BAR -->
+  <div class="search-bar">
+    <input type="text" id="city-input" placeholder="Search any city..." />
+    <button id="search-btn">Search</button>
+  </div>
+
+  <!-- WEATHER ALERT BANNER -->
+  <div id="alert-banner" class="alert-banner hidden"></div>
+
+  <!-- MAIN DASHBOARD GRID -->
+  <main class="dashboard">
+
+    <!-- WEATHER CARD -->
+    <section class="card" id="weather-card">
+      <h2>🌤️ Weather</h2>
+      <div id="weather-content">Loading...</div>
+    </section>
+
+    <!-- FORECAST CARD -->
+    <section class="card" id="forecast-card">
+      <h2>📅 5-Day Forecast</h2>
+      <div id="forecast-content">Loading...</div>
+    </section>
+
+    <!-- NEWS CARD -->
+    <!-- NEWS CARD -->
+    <section class="card wide" id="news-card">
+      <h2>📰 Top Headlines</h2>
+      <div class="news-search">
+        <input type="text" id="news-input" placeholder="Search news topic... (e.g. Manila, typhoon, economy)" />
+        <button id="news-search-btn">Search</button>
+      </div>
+      <ul id="news-content"><li>Loading...</li></ul>
+    </section>
+
+    <!-- MAP CARD -->
+    <section class="card wide" id="map-card">
+      <h2>🗺️ Your Location</h2>
+      <div id="map"></div>
+    </section>
+
+    <!-- CHAT CARD -->
+    <section class="card wide" id="chat-card">
+      <h2>💬 Ghost Terminal — Community Chat</h2>
+      <div id="chat-container">
+        <iframe 
+          id="ghost-terminal"
+          src="https://mendukusaiiiii.github.io/Ghost-Terminal/"
+          allowfullscreen>
+        </iframe>
+        <a href="https://mendukusaiiiii.github.io/Ghost-Terminal/" 
+          target="_blank" 
+          id="chat-open-btn">
+          ↗ Open in Full Screen
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/location.js"></script>
+  <script src="js/clock.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/forecast.js"></script>
+  <script src="js/news.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/alert.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
