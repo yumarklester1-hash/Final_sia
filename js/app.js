@@ -148,14 +148,31 @@ async function initDashboard() {
   // News search button
   // News search button
 document.getElementById("news-search-btn").addEventListener("click", async () => {
-  const topic = document.getElementById("news-input").value.trim();
+  const input = document.getElementById("news-input");
+  const topic = input.value.trim();
 
   // Remove dropdown if open
   const existing = document.getElementById("news-picker");
   if (existing) existing.remove();
 
+  // Show loading state
+  document.getElementById("news-content").innerHTML = `
+    <li><div class="skeleton"></div><div class="skeleton short"></div></li>
+    <li><div class="skeleton"></div><div class="skeleton short"></div></li>
+    <li><div class="skeleton"></div><div class="skeleton short"></div></li>
+  `;
+
   const newsData = await getNews("ph", topic);
   renderNews(newsData);
+});
+
+document.getElementById("news-input").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") document.getElementById("news-search-btn").click();
+});
+
+document.getElementById("news-input").addEventListener("input", () => {
+  const input = document.getElementById("news-input");
+  showNewsSuggestions(input);
 });
 
 // Enter key for news search
