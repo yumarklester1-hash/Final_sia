@@ -311,12 +311,12 @@ header {
 
 #chat-loading {
   padding: 20px;
-  min-height: 700px;
+  min-height: 800px;
 }
 
 #ghost-terminal {
   width: 100%;
-  height: 1000px;
+  height: 800px;
   border: none;
   border-radius: 10px;
   background: #000;

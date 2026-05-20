@@ -2,27 +2,36 @@
 
 async function getNews(countryCode = "ph", topic = "") {
   try {
-    let url;
+    let rssUrl;
 
     if (topic) {
-      url = `https://gnews.io/api/v4/search`
-          + `?q=${encodeURIComponent(topic)}`
-          + `&lang=en&max=5&apikey=${CONFIG.NEWS_KEY}`;
+      rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(topic)}&hl=en&gl=PH&ceid=PH:en`;
     } else {
-      url = `https://gnews.io/api/v4/top-headlines`
-          + `?country=${countryCode}&max=5&apikey=${CONFIG.NEWS_KEY}`;
+      rssUrl = `https://news.google.com/rss?hl=en&gl=PH&ceid=PH:en`;
     }
 
-    const res = await fetch(url);
+    // Use allorigins as proxy — works from any domain, no key needed
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+    const res = await fetch(proxyUrl);
     const data = await res.json();
-    return data.articles.map(a => ({
-      title: a.title,
-      url: a.url,
-      source: a.source.name,
-      description: a.description,   // ← add this
-      image: a.image,                // ← add this
-      publishedAt: a.publishedAt     // ← add this
+
+    // Parse the XML string into DOM
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(data.contents, "text/xml");
+    const items = Array.from(xml.querySelectorAll("item")).slice(0, 5);
+
+    if (!items.length) return [];
+
+    return items.map(item => ({
+      title: item.querySelector("title")?.textContent || "No title",
+      url: item.querySelector("link")?.textContent || "#",
+      source: item.querySelector("source")?.textContent || "Google News",
+      description: item.querySelector("description")?.textContent
+        ?.replace(/<[^>]+>/g, "").slice(0, 120) + "..." || "",
+      image: null,
+      publishedAt: item.querySelector("pubDate")?.textContent || ""
     }));
+
   } catch (error) {
     console.error("News fetch failed:", error);
     return [];
@@ -35,24 +44,20 @@ function renderNews(articles) {
     list.innerHTML = "<li style='color:var(--muted)'>No news found.</li>";
     return;
   }
-
   list.innerHTML = articles.map(a => {
     const timeAgo = getTimeAgo(a.publishedAt);
     return `
       <li class="news-item">
-        ${a.image ? `<img src="${a.image}" class="news-thumb" 
-          onerror="this.style.display='none'" />` : ""}
         <div class="news-body">
           <div class="news-meta">${a.source} • ${timeAgo}</div>
           <a href="${a.url}" target="_blank" class="news-title">${a.title}</a>
-          <p class="news-desc">${a.description || ""}</p>
+          <p class="news-desc">${a.description}</p>
         </div>
       </li>
     `;
   }).join("");
 }
 
-// Converts ISO date to "2 hours ago", "just now", etc.
 function getTimeAgo(dateStr) {
   if (!dateStr) return "";
   const now = new Date();
@@ -68,7 +73,7 @@ function getTimeAgo(dateStr) {
   return `${diffDays}d ago`;
 }
 
-// Suggested news topics dropdown
+// News suggestions dropdown
 const newsSuggestions = [
   "Manila", "Cebu", "Davao", "Cagayan de Oro", "Mindanao",
   "Typhoon", "Earthquake", "Politics", "Economy", "Sports",
@@ -77,20 +82,15 @@ const newsSuggestions = [
 ];
 
 function showNewsSuggestions(input) {
-  // Remove existing dropdown
   const existing = document.getElementById("news-picker");
   if (existing) existing.remove();
 
   const query = input.value.trim().toLowerCase();
-
-  // Only show if user has typed something
   if (!query) return;
 
-  // Filter suggestions that match what user typed
   const matches = newsSuggestions.filter(s =>
     s.toLowerCase().includes(query)
   );
-
   if (!matches.length) return;
 
   const picker = document.createElement("div");
@@ -125,20 +125,16 @@ function showNewsSuggestions(input) {
     item.addEventListener("click", async () => {
       input.value = suggestion;
       picker.remove();
-
-      // Fetch and render news for selected suggestion
       const newsData = await getNews("ph", suggestion);
       renderNews(newsData);
     });
     picker.appendChild(item);
   });
 
-  // Position below the news search bar
   const newsSearch = document.querySelector(".news-search");
   newsSearch.style.position = "relative";
   newsSearch.appendChild(picker);
 
-  // Click outside to close
   setTimeout(() => {
     document.addEventListener("click", () => picker.remove(), { once: true });
   }, 100);
