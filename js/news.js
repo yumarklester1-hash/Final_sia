@@ -22,15 +22,16 @@ async function getNews(countryCode = "ph", topic = "") {
 
     if (!items.length) return [];
 
-    return items.map(item => ({
-      title: item.querySelector("title")?.textContent || "No title",
-      url: item.querySelector("link")?.textContent || "#",
-      source: item.querySelector("source")?.textContent || "Google News",
-      description: item.querySelector("description")?.textContent
-        ?.replace(/<[^>]+>/g, "").slice(0, 120) + "..." || "",
-      image: null,
-      publishedAt: item.querySelector("pubDate")?.textContent || ""
-    }));
+    return items.map(item => {
+      const title = item.querySelector("title")?.textContent || "No title";
+      const url = item.querySelector("link")?.textContent || "#";
+      const source = item.querySelector("source")?.textContent || "Google News";
+      let desc = item.querySelector("description")?.textContent || "";
+      desc = desc.replace(/<[^>]+>/g, "").trim();
+      if (desc.length > 120) desc = desc.slice(0, 120) + "...";
+      const publishedAt = item.querySelector("pubDate")?.textContent || "";
+      return { title, url, source, description: desc, image: null, publishedAt };
+    });
 
   } catch (error) {
     console.error("News fetch failed:", error);
@@ -74,68 +75,65 @@ function getTimeAgo(dateStr) {
 }
 
 // News suggestions dropdown
-const newsSuggestions = [
-  "Manila", "Cebu", "Davao", "Cagayan de Oro", "Mindanao",
-  "Typhoon", "Earthquake", "Politics", "Economy", "Sports",
-  "Technology", "Health", "Education", "Crime", "Entertainment",
-  "Philippines News", "OFW", "Traffic", "BFAR", "PAGASA"
-];
-
-function showNewsSuggestions(input) {
-  const existing = document.getElementById("news-picker");
-  if (existing) existing.remove();
-
-  const query = input.value.trim().toLowerCase();
-  if (!query) return;
-
-  const matches = newsSuggestions.filter(s =>
-    s.toLowerCase().includes(query)
-  );
-  if (!matches.length) return;
-
-  const picker = document.createElement("div");
-  picker.id = "news-picker";
-  picker.style.cssText = `
-    position: absolute;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    z-index: 9999;
-    width: 100%;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    overflow: hidden;
-  `;
-
-  matches.forEach(suggestion => {
-    const item = document.createElement("div");
-    item.textContent = `🔍 ${suggestion}`;
-    item.style.cssText = `
-      padding: 12px 16px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-    `;
-    item.addEventListener("mouseover", () =>
-      item.style.background = "var(--border)"
-    );
-    item.addEventListener("mouseout", () =>
-      item.style.background = "transparent"
-    );
-    item.addEventListener("click", async () => {
-      input.value = suggestion;
-      picker.remove();
-      const newsData = await getNews("ph", suggestion);
-      renderNews(newsData);
-    });
-    picker.appendChild(item);
-  });
-
-  const newsSearch = document.querySelector(".news-search");
-  newsSearch.style.position = "relative";
-  newsSearch.appendChild(picker);
-
-  setTimeout(() => {
-    document.addEventListener("click", () => picker.remove(), { once: true });
-  }, 100);
+// Search UI removed: disable suggestions handler to avoid errors
+function showNewsSuggestions() {
+  return; // removed per request — search suggestions disabled
 }
+
+// Load categorized top headlines and render into #news-content
+async function renderNewsCategory(container, categoryName, topic) {
+  const section = document.createElement('section');
+  section.className = 'news-section';
+  const header = document.createElement('h3');
+  header.className = 'news-section-title';
+  header.textContent = categoryName;
+  const listEl = document.createElement('ul');
+  listEl.className = 'news-list';
+  listEl.innerHTML = "<li style='color:var(--muted)'>Loading...</li>";
+  section.appendChild(header);
+  section.appendChild(listEl);
+  container.appendChild(section);
+
+  const articles = await getNews('ph', topic);
+  if (!articles.length) {
+    listEl.innerHTML = "<li style='color:var(--muted)'>No news found.</li>";
+    return;
+  }
+  listEl.innerHTML = articles.map(a => {
+    const timeAgo = getTimeAgo(a.publishedAt);
+    return `
+      <li class="news-item">
+        <div class="news-body">
+          <div class="news-meta">${a.source} • ${timeAgo}</div>
+          <a href="${a.url}" target="_blank" class="news-title">${a.title}</a>
+          <p class="news-desc">${a.description}</p>
+        </div>
+      </li>
+    `;
+  }).join('');
+}
+
+async function initNews() {
+  const container = document.getElementById('news-content');
+  if (!container) return;
+  container.innerHTML = '';
+  const categories = [
+    { name: 'Top Stories', topic: '' },
+    { name: 'Politics', topic: 'Politics Philippines' },
+    { name: 'Economy', topic: 'Economy Philippines' },
+    { name: 'Technology', topic: 'Technology' },
+    { name: 'Sports', topic: 'Sports Philippines' },
+    { name: 'Entertainment', topic: 'Entertainment Philippines' },
+    { name: 'Health', topic: 'Health Philippines' }
+  ];
+  for (const c of categories) {
+    // sequentially load categories to reduce parallel network pressure
+    // (keeps UI responsive and avoids rate limits)
+    // each call appends its section to the container
+    // eslint-disable-next-line no-await-in-loop
+    await renderNewsCategory(container, c.name, c.topic);
+  }
+}
+
+// Auto-initialize news on script load
+initNews();

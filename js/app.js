@@ -118,32 +118,68 @@ async function initDashboard() {
   );
 
   // City search button
-  document.getElementById("search-btn").addEventListener("click", async () => {
-    const input = document.getElementById("city-input").value.trim();
+  // City search helper (used by button, Enter, and input events)
+  async function performCitySearch(inputVal) {
+    const input = inputVal.trim();
     if (!input) return;
 
     const geoUrl = `https://geocoding-api.open-meteo.com/v1/search`
                  + `?name=${encodeURIComponent(input)}&count=5`;
-    const geoRes = await fetch(geoUrl);
-    const geoData = await geoRes.json();
+    try {
+      const geoRes = await fetch(geoUrl);
+      const geoData = await geoRes.json();
 
-    if (!geoData.results || geoData.results.length === 0) {
-      alert("Location not found. Try a different name.");
-      return;
+      if (!geoData.results || geoData.results.length === 0) {
+        // show a subtle hint instead of blocking alert during typing
+        const picker = document.getElementById('location-picker');
+        if (picker) picker.remove();
+        return;
+      }
+
+      if (geoData.results.length === 1) {
+        await applyLocation(geoData.results[0]);
+        return;
+      }
+
+      showLocationPicker(geoData.results);
+    } catch (err) {
+      console.error('Geocoding failed', err);
     }
+  }
 
-    if (geoData.results.length === 1) {
-      await applyLocation(geoData.results[0]);
-      return;
-    }
-
-    showLocationPicker(geoData.results);
+  // Wire search button to helper
+  document.getElementById("search-btn").addEventListener("click", async () => {
+    const input = document.getElementById("city-input").value;
+    await performCitySearch(input);
   });
 
-  // Enter key for city search
+  // Enter key triggers immediate search
   document.getElementById("city-input").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") document.getElementById("search-btn").click();
+    if (e.key === "Enter") {
+      const input = document.getElementById("city-input").value;
+      performCitySearch(input);
+    }
   });
+
+  // Debounced input: automatically show results while typing
+  function debounce(fn, wait = 400) {
+    let t;
+    return function (...args) {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), wait);
+    };
+  }
+
+  const cityInput = document.getElementById('city-input');
+  cityInput.addEventListener('input', debounce((e) => {
+    const q = e.target.value;
+    if (!q || q.trim().length < 2) {
+      const picker = document.getElementById('location-picker');
+      if (picker) picker.remove();
+      return;
+    }
+    performCitySearch(q);
+  }, 500));
 
   // News search button
   // News search button
