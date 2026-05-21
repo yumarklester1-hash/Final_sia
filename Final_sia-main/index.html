@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartCo Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+
+<div style="display: flex; align-items: center; gap: 12px;">
+ <img 
+  src="Untitled_design-removebg-preview.png" 
+  alt="Logo" 
+  style="height: 40px; width: 40px; object-fit: contain;"
+>
+  <h2 style="margin: 0;">Smart Communication Dashboard</h2>
+</div>
+
+    <div id="location-display">
+      <img src="images/location.png" class="icon"> Detecting location...
+    </div>
+
+    <div class="header-right">
+      <div id="clock-display">
+        <img src="images/clock.png" class="icon"> --:--:--
+      </div>
+
+      <button id="theme-toggle"><img src="images/light.png" class="icon"> Light Mode</button>
+    </div>
+  
+  </header>
+
+  <!-- SEARCH BAR -->
+  <div class="search-bar">
+    <input type="text" id="city-input" placeholder="Search any city..." />
+    <button id="search-btn">Search</button>
+  </div>
+
+  <!-- WEATHER ALERT BANNER -->
+  <div id="alert-banner" class="alert-banner hidden"></div>
+
+  <!-- MAIN DASHBOARD GRID -->
+  <main class="dashboard">
+
+    <!-- WEATHER CARD -->
+    <section class="card" id="weather-card">
+      <h2>
+        <img src="images/weather.png" class="icon"> Weather
+      </h2>
+      <div id="weather-content">Loading...</div>
+    </section>
+
+    <!-- FORECAST CARD -->
+    <section class="card" id="forecast-card">
+      <h2>
+        <img src="images/forecast.png" class="icon"> 5-Day Forecast
+      </h2>
+      <div id="forecast-content">Loading...</div>
+    </section>
+
+    <!-- NEWS CARD -->
+    <section class="card wide" id="news-card">
+      <h2>
+        <img src="images/news.png" class="icon"> Top Headlines
+      </h2>
+
+      <div class="news-search">
+        <input type="text" id="news-input" placeholder="Search news topic..." />
+        <button id="news-search-btn">Search</button>
+      </div>
+
+      <ul id="news-content">
+        <li>Loading...</li>
+      </ul>
+    </section>
+
+    <!-- MAP CARD -->
+    <section class="card wide" id="map-card">
+      <h2>
+        <img src="images/map.png" class="icon"> Your Location
+      </h2>
+      <div id="map"></div>
+    </section>
+
+    <!-- CHAT CARD -->
+    <section class="card wide" id="chat-card">
+      <h2>
+        <img src="images/chat.png" class="icon"> Community Chat
+      </h2>
+
+      <div id="chat-container">
+        <iframe 
+          id="ghost-terminal"
+          src="https://mendukusaiiiii.github.io/Ghost-Terminal/"
+          allowfullscreen>
+        </iframe>
+
+        <a href="https://mendukusaiiiii.github.io/Ghost-Terminal/" 
+          target="_blank" 
+          id="chat-open-btn">
+          ↗ Open in New Tab
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- DISCORD FOOTER -->
+  <footer>
+    <a href="https://discord.gg/b4WP5G7HYT" target="_blank" id="discord-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+      </svg>
+      Join our Discord
+    </a>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/location.js"></script>
+  <script src="js/clock.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/forecast.js"></script>
+  <script src="js/news.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/alert.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
