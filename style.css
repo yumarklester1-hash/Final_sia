@@ -358,7 +358,34 @@ header {
   100% { background-position: -200% 0; }
 }
 
-.icon{
+/* ===== DISCORD FOOTER ===== */
+footer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+#discord-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  background: #5865F2;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
+}
+
+#discord-btn:hover {
+  background: #4752C4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(88, 101, 242, 0.55);
+}
   width:24px;
   height:24px;
   vertical-align:middle;
