@@ -11,10 +11,16 @@
 
   <!-- HEADER -->
   <header>
-    <div id="location-display">📍 Detecting location...</div>
+    <div id="location-display">
+      <img src="images/location.svg" class="icon"> Detecting location...
+    </div>
+
     <div class="header-right">
-      <div id="clock-display">🕐 --:--:--</div>
-      <button id="theme-toggle">☀️ Light Mode</button>
+      <div id="clock-display">
+        <img src="images/clock.svg" class="icon"> --:--:--
+      </div>
+
+      <button id="theme-toggle"><img src="images/light.svg" class="icon"> Light Mode</button>
     </div>
   </header>
 
@@ -32,42 +38,57 @@
 
     <!-- WEATHER CARD -->
     <section class="card" id="weather-card">
-      <h2>🌤️ Weather</h2>
+      <h2>
+        <img src="images/weather.svg" class="icon"> Weather
+      </h2>
       <div id="weather-content">Loading...</div>
     </section>
 
     <!-- FORECAST CARD -->
     <section class="card" id="forecast-card">
-      <h2>📅 5-Day Forecast</h2>
+      <h2>
+        <img src="images/forecast.svg" class="icon"> 5-Day Forecast
+      </h2>
       <div id="forecast-content">Loading...</div>
     </section>
 
     <!-- NEWS CARD -->
-    <!-- NEWS CARD -->
     <section class="card wide" id="news-card">
-      <h2>📰 Top Headlines</h2>
+      <h2>
+        <img src="images/news.svg" class="icon"> Top Headlines
+      </h2>
+
       <div class="news-search">
-        <input type="text" id="news-input" placeholder="Search news topic... (e.g. Manila, typhoon, economy)" />
+        <input type="text" id="news-input" placeholder="Search news topic..." />
         <button id="news-search-btn">Search</button>
       </div>
-      <ul id="news-content"><li>Loading...</li></ul>
+
+      <ul id="news-content">
+        <li>Loading...</li>
+      </ul>
     </section>
 
     <!-- MAP CARD -->
     <section class="card wide" id="map-card">
-      <h2>🗺️ Your Location</h2>
+      <h2>
+        <img src="images/map.svg" class="icon"> Your Location
+      </h2>
       <div id="map"></div>
     </section>
 
     <!-- CHAT CARD -->
     <section class="card wide" id="chat-card">
-      <h2>💬 Ghost Terminal — Community Chat</h2>
+      <h2>
+        <img src="images/chat.svg" class="icon"> Ghost Terminal — Community Chat
+      </h2>
+
       <div id="chat-container">
         <iframe 
           id="ghost-terminal"
           src="https://mendukusaiiiii.github.io/Ghost-Terminal/"
           allowfullscreen>
         </iframe>
+
         <a href="https://mendukusaiiiii.github.io/Ghost-Terminal/" 
           target="_blank" 
           id="chat-open-btn">
@@ -75,6 +96,7 @@
         </a>
       </div>
     </section>
+
   </main>
 
   <script src="config.js"></script>

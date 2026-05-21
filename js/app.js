@@ -93,8 +93,8 @@ async function applyLocation(result) {
   const lat = result.latitude;
   const lon = result.longitude;
 
-  document.getElementById("location-display").textContent
-    = `📍 ${name}, ${country}`;
+  document.getElementById("location-display").innerHTML
+    = `<img src="images/location.svg" class="icon"> ${name}, ${country}`;
 
   // Clear city input
   document.getElementById("city-input").value = "";
@@ -108,7 +108,7 @@ async function initDashboard() {
   showSkeletons();
   const location = await getUserLocation();
   document.getElementById("location-display")
-    .textContent = `📍 ${location.city}, ${location.country}`;
+    .innerHTML = `<img src="images/location.svg" class="icon"> ${location.city}, ${location.country}`;
 
   await loadDashboard(
     location.city,
