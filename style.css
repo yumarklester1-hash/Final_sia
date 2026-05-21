@@ -296,7 +296,7 @@ header {
   color: var(--muted);
   line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 2;       /* show max 2 lines then cut off */
+
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -356,4 +356,12 @@ header {
 @keyframes shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+.icon{
+  width:24px;
+  height:24px;
+  vertical-align:middle;
+  margin-right:8px;
+  object-fit:contain;
 }
