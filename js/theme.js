@@ -6,6 +6,6 @@ function initTheme() {
   btn.addEventListener("click", () => {
     document.body.classList.toggle("light");
     const isLight = document.body.classList.contains("light");
-    btn.innerHTML = isLight ? '<img src="images/dark.svg" class="icon"> Dark Mode' : '<img src="images/light.svg" class="icon"> Light Mode';
+    btn.innerHTML = isLight ? '<img src="images/dark.png" class="icon"> Dark Mode' : '<img src="images/light.png" class="icon"> Light Mode';
   });
 }

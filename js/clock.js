@@ -16,7 +16,7 @@ function updateClock() {
     day: "numeric"
   });
   document.getElementById("clock-display").innerHTML
-    = `<img src="images/clock.svg" class="icon"> ${timeStr} | ${dateStr}`;
+    = `<img src="images/clock.png" class="icon"> ${timeStr} | ${dateStr}`;
 }
 
 // Start immediately and update every second
