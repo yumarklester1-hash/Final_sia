@@ -80,59 +80,17 @@ function showNewsSuggestions() {
   return; // removed per request — search suggestions disabled
 }
 
-// Load categorized top headlines and render into #news-content
-async function renderNewsCategory(container, categoryName, topic) {
-  const section = document.createElement('section');
-  section.className = 'news-section';
-  const header = document.createElement('h3');
-  header.className = 'news-section-title';
-  header.textContent = categoryName;
-  const listEl = document.createElement('ul');
-  listEl.className = 'news-list';
-  listEl.innerHTML = "<li style='color:var(--muted)'>Loading...</li>";
-  section.appendChild(header);
-  section.appendChild(listEl);
-  container.appendChild(section);
-
-  const articles = await getNews('ph', topic);
-  if (!articles.length) {
-    listEl.innerHTML = "<li style='color:var(--muted)'>No news found.</li>";
-    return;
-  }
-  listEl.innerHTML = articles.map(a => {
-    const timeAgo = getTimeAgo(a.publishedAt);
-    return `
-      <li class="news-item">
-        <div class="news-body">
-          <div class="news-meta">${a.source} • ${timeAgo}</div>
-          <a href="${a.url}" target="_blank" class="news-title">${a.title}</a>
-          <p class="news-desc">${a.description}</p>
-        </div>
-      </li>
-    `;
-  }).join('');
-}
-
 async function initNews() {
   const container = document.getElementById('news-content');
   if (!container) return;
-  container.innerHTML = '';
-  const categories = [
-    { name: 'Top Stories', topic: '' },
-    { name: 'Politics', topic: 'Politics Philippines' },
-    { name: 'Economy', topic: 'Economy Philippines' },
-    { name: 'Technology', topic: 'Technology' },
-    { name: 'Sports', topic: 'Sports Philippines' },
-    { name: 'Entertainment', topic: 'Entertainment Philippines' },
-    { name: 'Health', topic: 'Health Philippines' }
-  ];
-  for (const c of categories) {
-    // sequentially load categories to reduce parallel network pressure
-    // (keeps UI responsive and avoids rate limits)
-    // each call appends its section to the container
-    // eslint-disable-next-line no-await-in-loop
-    await renderNewsCategory(container, c.name, c.topic);
-  }
+  container.innerHTML = `
+    <li><div class="skeleton"></div><div class="skeleton short"></div></li>
+    <li><div class="skeleton"></div><div class="skeleton short"></div></li>
+    <li><div class="skeleton"></div><div class="skeleton short"></div></li>
+  `;
+
+  const articles = await getNews('ph');
+  renderNews(articles);
 }
 
 // Auto-initialize news on script load
